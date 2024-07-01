@@ -21,10 +21,10 @@ model User {
   imageUrl String?
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-  transactions Transactions[]
+  transactions Transaction[]
 }
 
-model Transactions {
+model Transaction {
   id String @id @default(uuid())
   text String 
   amount Float

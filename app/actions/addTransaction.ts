@@ -1,6 +1,8 @@
 "use server"
 
 import { auth } from "@clerk/nextjs/server";
+import { db } from "@/lib/db";
+import { revalidatePath } from "next/cache";
 
 interface Transaction {
     text:string;
@@ -33,13 +35,24 @@ async function addTransaction(formData:FormData): Promise<TransactionResult>{
             error:"User not found"
         }
     }
-
-    const transaction:Transaction = {
-        text, amount
-    }
+try {
+    const transaction:Transaction = await db.transaction.create({
+        data:{
+        text,
+         amount,
+         userId
+    } 
+}) 
+    revalidatePath("/")
     return {
         data: transaction
     }
+} catch (error) {
+    return {
+        error:"Transaction not added"
+    }
+}
+    
 
 }
 
